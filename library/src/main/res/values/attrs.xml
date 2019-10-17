@@ -34,5 +34,8 @@
         <attr name="stpi_labelMarginTop" format="dimension"/>
         <attr name="stpi_labelSize" format="dimension"/>
         <attr name="stpi_labelColor" format="color"/>
+
+        <attr name="stpi_textSize" format="dimension"/>
+
     </declare-styleable>
 </resources>

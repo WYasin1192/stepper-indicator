@@ -25,7 +25,7 @@ repositories {
 
 Then, add the library dependency:
 ```gradle
-compile 'com.github.badoualy:stepper-indicator:1.0.7'
+compile 'com.github.badoualy:stepper-indicator:1.0.8'
 ```
 
 Now go do some awesome stuff!
