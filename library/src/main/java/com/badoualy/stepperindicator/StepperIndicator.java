@@ -966,9 +966,9 @@ public class StepperIndicator extends View implements ViewPager.OnPageChangeList
             }
         }
         if(!inCheckAnimation && stepCount == stepsCirclePaintList.size()){
-            if(drawToNext){ stepsCirclePaintList.get(currentStep).setColor(indicatorColor); }
+            if(drawToNext && currentStep != stepsCirclePaintList.size()){ stepsCirclePaintList.get(currentStep).setColor(indicatorColor); }
 
-            if( drawFromNext){ stepsCirclePaintList.get(previousStep).setColor(circleColor);}
+            if( drawFromNext && previousStep != stepsCirclePaintList.size()){ stepsCirclePaintList.get(previousStep).setColor(circleColor);}
 
         }
 
