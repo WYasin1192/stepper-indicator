@@ -580,7 +580,7 @@ public class StepperIndicator extends View implements ViewPager.OnPageChangeList
         }
 
         //first step as active
-        if (showStepTextNumber && stepCount == stepsTextNumberPaintList.size()) {
+        if (showStepTextNumber &&  !stepsTextNumberPaintList.isEmpty()) {
             stepsTextNumberPaintList.get(0).setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
             stepsCirclePaintList.get(0).setColor(a.getColor(R.styleable.StepperIndicator_stpi_indicatorColor, defaultCircleColor));
 
@@ -1110,6 +1110,14 @@ public class StepperIndicator extends View implements ViewPager.OnPageChangeList
 
         this.stepCount = stepCount;
         currentStep = 0;
+
+        stepsCirclePaintList =new ArrayList<>(stepCount);
+        for (int i = 0; i < stepCount; i++) {
+            // Based on the main indicator paint object, we create the customized one
+            Paint circlePaint = new Paint(this.circlePaint);
+            stepsCirclePaintList.add(circlePaint);
+        }
+        stepsCirclePaintList.get(0).setColor(indicatorColor);
         compute();
         invalidate();
     }
