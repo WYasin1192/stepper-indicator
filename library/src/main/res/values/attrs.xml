@@ -36,6 +36,7 @@
         <attr name="stpi_labelColor" format="color"/>
 
         <attr name="stpi_textSize" format="dimension"/>
+        <attr name="stpi_textColor" format="color"/>
 
     </declare-styleable>
 </resources>

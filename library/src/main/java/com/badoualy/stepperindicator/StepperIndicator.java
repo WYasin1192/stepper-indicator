@@ -363,6 +363,10 @@ public class StepperIndicator extends View implements ViewPager.OnPageChangeList
     private AnimatorSet animatorSet;
     private ObjectAnimator lineAnimator, indicatorAnimator, checkAnimator;
 
+    //colors
+    private int circleColor;
+    private int indicatorColor;
+
     /**
      * Custom gesture listener though which all the touch events are propagated.
      * <p>
@@ -476,19 +480,20 @@ public class StepperIndicator extends View implements ViewPager.OnPageChangeList
         circlePaint.setStrokeWidth(
                 a.getDimension(R.styleable.StepperIndicator_stpi_circleStrokeWidth, defaultCircleStrokeWidth));
         circlePaint.setStyle(Paint.Style.STROKE);
-        circlePaint.setColor(a.getColor(R.styleable.StepperIndicator_stpi_circleColor, defaultCircleColor));
+        circleColor = a.getColor(R.styleable.StepperIndicator_stpi_circleColor, defaultCircleColor);
+        circlePaint.setColor(circleColor);
         circlePaint.setAntiAlias(true);
 
         // Call this as early as possible as other properties are configured based on the number of steps
         setStepCount(a.getInteger(R.styleable.StepperIndicator_stpi_stepCount, 2));
 
         final int stepsCircleColorsResId = a.getResourceId(R.styleable.StepperIndicator_stpi_stepsCircleColors, 0);
-        if (stepsCircleColorsResId != 0) {
-            stepsCirclePaintList = new ArrayList<>(stepCount);
+        stepsCirclePaintList = new ArrayList<>(stepCount);
 
-            for (int i = 0; i < stepCount; i++) {
-                // Based on the main indicator paint object, we create the customized one
-                Paint circlePaint = new Paint(this.circlePaint);
+        for (int i = 0; i < stepCount; i++) {
+            // Based on the main indicator paint object, we create the customized one
+            Paint circlePaint = new Paint(this.circlePaint);
+            if (stepsCircleColorsResId != 0) {
                 if (isInEditMode()) {
                     // Fallback for edit mode - to show something in the preview
                     circlePaint.setColor(getRandomColor());
@@ -506,20 +511,24 @@ public class StepperIndicator extends View implements ViewPager.OnPageChangeList
                     // No need for the array anymore, recycle it
                     colorResValues.recycle();
                 }
-
-                stepsCirclePaintList.add(circlePaint);
             }
+
+            stepsCirclePaintList.add(circlePaint);
         }
 
         indicatorPaint = new Paint(circlePaint);
         indicatorPaint.setStyle(Paint.Style.FILL);
-        indicatorPaint.setColor(a.getColor(R.styleable.StepperIndicator_stpi_indicatorColor, defaultIndicatorColor));
+        indicatorColor = a.getColor(R.styleable.StepperIndicator_stpi_indicatorColor, defaultIndicatorColor);
+        indicatorPaint.setColor(indicatorColor);
         indicatorPaint.setAntiAlias(true);
 
         float defaultTextSize = resources.getDimension(R.dimen.stpi_default_text_size);
         float textSize = a.getDimension(R.styleable.StepperIndicator_stpi_textSize, defaultTextSize);
         stepTextNumberPaint = new Paint(indicatorPaint);
         stepTextNumberPaint.setTextSize(textSize);
+
+        int textColor = a.getColor(R.styleable.StepperIndicator_stpi_textColor, defaultIndicatorColor);
+        stepTextNumberPaint.setColor(textColor);
 
         showStepTextNumber = a.getBoolean(R.styleable.StepperIndicator_stpi_showStepNumberInstead, false);
 
@@ -571,8 +580,10 @@ public class StepperIndicator extends View implements ViewPager.OnPageChangeList
         }
 
         //first step as active
-        if(showStepTextNumber && stepCount == stepsTextNumberPaintList.size()) {
+        if (showStepTextNumber && stepCount == stepsTextNumberPaintList.size()) {
             stepsTextNumberPaintList.get(0).setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+            stepsCirclePaintList.get(0).setColor(a.getColor(R.styleable.StepperIndicator_stpi_indicatorColor, defaultCircleColor));
+
         }
 
         linePaint = new Paint();
@@ -954,6 +965,13 @@ public class StepperIndicator extends View implements ViewPager.OnPageChangeList
                 }
             }
         }
+        if(!inCheckAnimation && stepCount == stepsCirclePaintList.size()){
+            if(drawToNext){ stepsCirclePaintList.get(currentStep).setColor(indicatorColor); }
+
+            if( drawFromNext){ stepsCirclePaintList.get(previousStep).setColor(circleColor);}
+
+        }
+
     }
 
     /**
@@ -1160,6 +1178,7 @@ public class StepperIndicator extends View implements ViewPager.OnPageChangeList
                     .ofFloat(StepperIndicator.this, "animCheckRadius", checkRadius, indicatorRadius);
 
             animatorSet.playSequentially(indicatorAnimator, lineAnimator, checkAnimator);
+
         }
 
         if (animatorSet != null) {
@@ -1172,9 +1191,10 @@ public class StepperIndicator extends View implements ViewPager.OnPageChangeList
 
             animatorSet.start();
         }
-        if(showStepTextNumber && stepCount == stepsTextNumberPaintList.size() && currentStep != stepCount && previousStep != stepCount) {
+        if (showStepTextNumber && stepCount == stepsTextNumberPaintList.size() && currentStep != stepCount && previousStep != stepCount) {
             stepsTextNumberPaintList.get(currentStep).setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
             stepsTextNumberPaintList.get(previousStep).setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
+
         }
 
 
