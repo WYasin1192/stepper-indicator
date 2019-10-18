@@ -337,7 +337,7 @@ public class StepperIndicator extends View implements ViewPager.OnPageChangeList
      */
     private GestureDetector gestureDetector;
     private int stepCount;
-    private int currentStep;
+    private int currentStep = 0;
     private int previousStep;
 
     // X position of each step indicator's center
@@ -1185,6 +1185,7 @@ public class StepperIndicator extends View implements ViewPager.OnPageChangeList
                     indicatorRadius * 1.4f, indicatorRadius);
 
             animatorSet.play(lineAnimator).with(checkAnimator).before(indicatorAnimator);
+            makeStepBold();
         } else if (currentStep == previousStep - 1) {
             // Going back to previous step
             animatorSet = new AnimatorSet();
@@ -1204,7 +1205,7 @@ public class StepperIndicator extends View implements ViewPager.OnPageChangeList
                     .ofFloat(StepperIndicator.this, "animCheckRadius", checkRadius, indicatorRadius);
 
             animatorSet.playSequentially(indicatorAnimator, lineAnimator, checkAnimator);
-
+            makeStepBold();
         }
 
         if (animatorSet != null) {
@@ -1217,14 +1218,18 @@ public class StepperIndicator extends View implements ViewPager.OnPageChangeList
 
             animatorSet.start();
         }
+
+
+
+        invalidate();
+    }
+
+    private void makeStepBold(){
         if (showStepTextNumber && stepCount == stepsTextNumberPaintList.size() && currentStep != stepCount && previousStep != stepCount) {
             stepsTextNumberPaintList.get(currentStep).setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
             stepsTextNumberPaintList.get(previousStep).setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
 
         }
-
-
-        invalidate();
     }
 
     /**
